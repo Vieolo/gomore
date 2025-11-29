@@ -1,6 +1,0 @@
-name = "gomore"
-description = "CLI support for the go.toml | centralized config file for the Go projects"
-version = "0.1.0"
-
-[commands]
-local-install = "go build -o $GOPATH/bin/gomore main.go"
