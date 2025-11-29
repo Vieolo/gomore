@@ -25,7 +25,7 @@ var runCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		if len(args) == 0 {
+		if len(args) == 0 || args[0] == "" {
 			termange.PrintErrorln("No command was provided!")
 			fmt.Printf("\nUsage:\n  gomore run <command>\n\n")
 			gy.PrintCommandList("Here are the available commands")
@@ -33,10 +33,6 @@ var runCmd = &cobra.Command{
 		}
 
 		name := args[0]
-		if name == "" {
-			os.Exit(1)
-		}
-
 		c, ok := gy.Commands[name]
 		if !ok {
 			termange.PrintErrorln("The selected command is not listed in go.yaml")
