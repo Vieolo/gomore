@@ -3,4 +3,4 @@ description: "CLI support for the go.yaml | centralized config file for the Go p
 version: "0.1.0"
 
 commands:
-  - local-install: "go build -o $GOPATH/bin/gomore main.go"
+  local-install: "go build -o $GOPATH/bin/gomore main.go"
