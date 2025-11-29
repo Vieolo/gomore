@@ -10,39 +10,54 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/vieolo/gomore/goyaml"
 	"github.com/vieolo/termange"
-	"github.com/vieolo/termange/tui"
 )
 
 // runCmd represents the run command
 var runCmd = &cobra.Command{
-	Use:   "run",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Use:     "run <command>",
+	Example: "gomore run build",
+	Short:   "Runs a command from go.yaml",
+	Long:    `Runs a pre-defined command from go.yaml.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		gt, gtErr := goyaml.ReadGoYAML()
-		if gtErr != nil {
-			termange.PrintErrorln(gtErr.Error())
+		gy, gyErr := goyaml.ReadGoYAML()
+		if gyErr != nil {
+			termange.PrintErrorln(gyErr.Error())
 			os.Exit(1)
 		}
-		fmt.Println(gt)
-		var name string
+
 		if len(args) == 0 {
-			name = tui.TextInput(tui.TextInputOptions{
-				Prompt: "Enter the command name you wish to run",
-			})
-		} else {
-			name = args[0]
+			termange.PrintErrorln("No command was provided!")
+			fmt.Printf("\nUsage:\n  gomore run <command>\n\n")
+			gy.PrintCommandList("Here are the available commands")
+			return
 		}
 
+		name := args[0]
 		if name == "" {
 			os.Exit(1)
 		}
 
+		c, ok := gy.Commands[name]
+		if !ok {
+			termange.PrintErrorln("The selected command is not listed in go.yaml")
+			gy.PrintCommandList("Here are the available commands")
+			return
+		}
+
+		termange.PrintInfof("Running %s...\n", name)
+		stdo, stde, cerr := termange.RunRawCommand(c)
+		if cerr != nil {
+			termange.PrintErrorln(cerr.Error())
+			return
+		}
+		stdeStr := stde.String()
+		if stdeStr != "" {
+			fmt.Println(stde.String())
+		}
+		stdoStr := stdo.String()
+		if stdoStr != "" {
+			fmt.Println(stdo.String())
+		}
 	},
 }
 
