@@ -25,6 +25,12 @@ var runCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
+		listFlag, _ := cmd.Flags().GetBool("list")
+		if listFlag {
+			gy.PrintCommandList("Available commands in go.yaml")
+			return
+		}
+
 		if len(args) == 0 || args[0] == "" {
 			termange.PrintErrorln("No command was provided!")
 			fmt.Printf("\nUsage:\n  gomore run <command>\n\n")
@@ -68,4 +74,5 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// runCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	runCmd.Flags().BoolP("list", "l", false, "List the available commands defined in go.yaml")
 }
