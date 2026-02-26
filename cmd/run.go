@@ -17,7 +17,7 @@ var runCmd = &cobra.Command{
 	Use:     "run <command>",
 	Example: "gomore run build",
 	Short:   "Runs a command from go.yaml",
-	Long:    `Runs a pre-defined command from go.yaml.`,
+	Long:    `Runs a pre-defined command from go.yaml`,
 	Run: func(cmd *cobra.Command, args []string) {
 		gy, gyErr := goyaml.ReadGoYAML()
 		if gyErr != nil {
@@ -65,14 +65,5 @@ var runCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(runCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// runCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// runCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	runCmd.Flags().BoolP("list", "l", false, "List the available commands defined in go.yaml")
 }
