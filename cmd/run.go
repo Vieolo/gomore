@@ -17,12 +17,18 @@ var runCmd = &cobra.Command{
 	Use:     "run <command>",
 	Example: "gomore run build",
 	Short:   "Runs a command from go.yaml",
-	Long:    `Runs a pre-defined command from go.yaml.`,
+	Long:    `Runs a pre-defined command from go.yaml`,
 	Run: func(cmd *cobra.Command, args []string) {
 		gy, gyErr := goyaml.ReadGoYAML()
 		if gyErr != nil {
 			termange.PrintErrorln(gyErr.Error())
 			os.Exit(1)
+		}
+
+		listFlag, _ := cmd.Flags().GetBool("list")
+		if listFlag {
+			gy.PrintCommandList("Available commands in go.yaml")
+			return
 		}
 
 		if len(args) == 0 || args[0] == "" {
@@ -44,15 +50,14 @@ var runCmd = &cobra.Command{
 		stdo, stde, cerr := termange.RunRawCommand(c)
 		if cerr != nil {
 			termange.PrintErrorln(cerr.Error())
-			return
 		}
 		stdeStr := stde.String()
 		if stdeStr != "" {
-			fmt.Println(stde.String())
+			fmt.Println(stdeStr)
 		}
 		stdoStr := stdo.String()
 		if stdoStr != "" {
-			fmt.Println(stdo.String())
+			fmt.Println(stdoStr)
 		}
 	},
 }
@@ -60,13 +65,5 @@ var runCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(runCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// runCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// runCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	runCmd.Flags().BoolP("list", "l", false, "List the available commands defined in go.yaml")
 }
