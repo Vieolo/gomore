@@ -44,15 +44,14 @@ var runCmd = &cobra.Command{
 		stdo, stde, cerr := termange.RunRawCommand(c)
 		if cerr != nil {
 			termange.PrintErrorln(cerr.Error())
-			return
 		}
 		stdeStr := stde.String()
 		if stdeStr != "" {
-			fmt.Println(stde.String())
+			fmt.Println(stdeStr)
 		}
 		stdoStr := stdo.String()
 		if stdoStr != "" {
-			fmt.Println(stdo.String())
+			fmt.Println(stdoStr)
 		}
 	},
 }
