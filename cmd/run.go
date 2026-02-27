@@ -4,8 +4,13 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"os"
+	"os/exec"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/spf13/cobra"
 	"github.com/vieolo/gomore/goyaml"
@@ -46,19 +51,41 @@ var runCmd = &cobra.Command{
 			return
 		}
 
+		if c == "" {
+			termange.PrintErrorln("The selected command is empty!")
+			return
+		}
+
+		// Preparing for the SIGTERM
+		ctx, cancel := context.WithCancel(context.Background())
+		defer cancel()
+		sigChan := make(chan os.Signal, 1)
+		signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
+
+		// Starting the process of the command
 		termange.PrintInfof("Running %s...\n", name)
-		stdo, stde, cerr := termange.RunRawCommand(c)
+		commandRunner := exec.CommandContext(ctx, "sh", "-c", c)
+		commandRunner.Stdout = os.Stdout
+		commandRunner.Stderr = os.Stderr
+		commandRunner.Env = os.Environ()
+
+		cerr := commandRunner.Start()
 		if cerr != nil {
 			termange.PrintErrorln(cerr.Error())
+			return
 		}
-		stdeStr := stde.String()
-		if stdeStr != "" {
-			fmt.Println(stdeStr)
-		}
-		stdoStr := stdo.String()
-		if stdoStr != "" {
-			fmt.Println(stdoStr)
-		}
+
+		go func() {
+			<-sigChan
+			// If after 10 seconds, the process is still
+			// not completed, we force run the `cancel`
+			go func() {
+				time.Sleep(10 * time.Second)
+				cancel()
+			}()
+		}()
+
+		commandRunner.Wait()
 	},
 }
 
