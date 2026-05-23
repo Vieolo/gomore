@@ -5,8 +5,8 @@ go 1.25.4
 require (
 	github.com/spf13/cobra v1.10.1
 	github.com/vieolo/filange v0.2.0
+	github.com/vieolo/godotyaml v0.1.0
 	github.com/vieolo/termange v0.5.1
-	gopkg.in/yaml.v2 v2.4.0
 )
 
 require (
@@ -31,4 +31,5 @@ require (
 	golang.org/x/sys v0.6.0 // indirect
 	golang.org/x/term v0.6.0 // indirect
 	golang.org/x/text v0.3.8 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
