@@ -1,6 +1,21 @@
 name: "gomore"
-description: "CLI support for the go.yaml | centralized config file for the Go projects"
-version: "0.1.2"
+description: "CLI tool to provide functionalities that complement the official Go tooling"
+version: "0.2.0"
 
-commands:
-  local-install: "go build -o $GOPATH/bin/gomore main.go"
+schema_version: 0
+
+repository: https://github.com/vieolo/gomore
+issue_tracker: https://github.com/vieolo/gomore/issues
+license: MIT
+
+authors:
+  - name: Vieolo
+  
+executables:
+  main:
+    entrypoint: ./main
+
+external:
+  gomore:
+    commands:
+      local-install: "go build -o $GOPATH/bin/gomore main.go"

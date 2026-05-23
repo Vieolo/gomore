@@ -1,9 +1,11 @@
 package cmd
 
 import (
+	"bytes"
+
 	"github.com/spf13/cobra"
+	"github.com/vieolo/godotyaml"
 	"github.com/vieolo/termange"
-	"gopkg.in/yaml.v2"
 )
 
 // The bytes is injected from main.go downward
@@ -15,17 +17,8 @@ var versionCmd = &cobra.Command{
 	Short: "Displays the version of gomore cli",
 	Long:  "Displays the version of gomore cli",
 	Run: func(cmd *cobra.Command, args []string) {
-		type gyStruct struct {
-			Version string `yaml:"version"`
-		}
-
-		var gy gyStruct
-		err := yaml.Unmarshal(ThisGyByte, &gy)
-		if err != nil {
-			termange.PrintErrorln(err.Error())
-			return
-		}
-		termange.PrintInfof("v%s\n", gy.Version)
+		doc, _ := godotyaml.Parse(bytes.NewReader(ThisGyByte))
+		termange.PrintInfof("v%s\n", doc.Version())
 	},
 }
 

@@ -13,7 +13,8 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
-	"github.com/vieolo/gomore/goyaml"
+	"github.com/vieolo/godotyaml"
+	"github.com/vieolo/gomore/internal"
 	"github.com/vieolo/termange"
 )
 
@@ -24,30 +25,40 @@ var runCmd = &cobra.Command{
 	Short:   "Runs a command from go.yaml",
 	Long:    `Runs a pre-defined command from go.yaml`,
 	Run: func(cmd *cobra.Command, args []string) {
-		gy, gyErr := goyaml.ReadGoYAML()
-		if gyErr != nil {
-			termange.PrintErrorln(gyErr.Error())
+		doc, err := godotyaml.Load("go.yaml")
+		if err != nil {
+			termange.PrintErrorln(err.Error())
+			os.Exit(1)
+		}
+		var config internal.Config
+		ok, err := doc.DecodeExternalConfig("gomore", &config)
+		if err != nil {
+			termange.PrintErrorln(err.Error())
+			os.Exit(1)
+		}
+		if !ok {
+			termange.PrintErrorln("Your go.yaml has no config for gomore in its external field")
 			os.Exit(1)
 		}
 
 		listFlag, _ := cmd.Flags().GetBool("list")
 		if listFlag {
-			gy.PrintCommandList("Available commands in go.yaml")
+			config.PrintCommandList("Available commands in go.yaml")
 			return
 		}
 
 		if len(args) == 0 || args[0] == "" {
-			termange.PrintErrorln("No command was provided!")
+			termange.PrintWarningln("No command was provided!")
 			fmt.Printf("\nUsage:\n  gomore run <command>\n\n")
-			gy.PrintCommandList("Here are the available commands")
+			config.PrintCommandList("Here are the available commands")
 			return
 		}
 
 		name := args[0]
-		c, ok := gy.Commands[name]
+		c, ok := config.Commands[name]
 		if !ok {
 			termange.PrintErrorln("The selected command is not listed in go.yaml")
-			gy.PrintCommandList("Here are the available commands")
+			config.PrintCommandList("Here are the available commands")
 			return
 		}
 
