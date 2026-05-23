@@ -1,6 +1,6 @@
 name: "gomore"
 description: "CLI tool to provide functionalities that complement the official Go tooling"
-version: "0.1.2"
+version: "0.2.0"
 
 schema_version: 0
 
