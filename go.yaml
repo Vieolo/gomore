@@ -1,6 +1,19 @@
 name: "gomore"
-description: "CLI support for the go.yaml"
+description: "CLI tool to provide functionalities that complement the official Go tooling"
 version: "0.1.2"
+
+schema_version: 0
+
+repository: https://github.com/vieolo/gomore
+issue_tracker: https://github.com/vieolo/gomore/issues
+license: MIT
+
+authors:
+  - name: Vieolo
+  
+executables:
+  main:
+    entrypoint: ./main
 
 external:
   gomore:
