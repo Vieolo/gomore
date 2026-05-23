@@ -1,6 +1,8 @@
 name: "gomore"
-description: "CLI support for the go.yaml | centralized config file for the Go projects"
+description: "CLI support for the go.yaml"
 version: "0.1.2"
 
-commands:
-  local-install: "go build -o $GOPATH/bin/gomore main.go"
+external:
+  gomore:
+    commands:
+      local-install: "go build -o $GOPATH/bin/gomore main.go"
