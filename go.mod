@@ -5,7 +5,7 @@ go 1.25.4
 require (
 	github.com/spf13/cobra v1.10.1
 	github.com/vieolo/filange v0.2.0
-	github.com/vieolo/godotyaml v0.1.0
+	github.com/vieolo/godotyaml v0.2.0
 	github.com/vieolo/termange v0.5.1
 )
 
@@ -26,10 +26,10 @@ require (
 	github.com/muesli/termenv v0.15.1 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/spf13/pflag v1.0.9 // indirect
+	go.yaml.in/yaml/v3 v3.0.5 // indirect
 	golang.org/x/exp v0.0.0-20230206171751-46f607a40771 // indirect
 	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/sys v0.6.0 // indirect
 	golang.org/x/term v0.6.0 // indirect
 	golang.org/x/text v0.3.8 // indirect
-	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
