@@ -1,11 +1,11 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
 	"github.com/vieolo/filange"
+	"github.com/vieolo/godotyaml"
 	"github.com/vieolo/termange"
 )
 
@@ -26,18 +26,10 @@ var initCmd = &cobra.Command{
 			name = "myproject"
 		}
 
-		initContent := fmt.Sprintf(`name: %s
-description: short description of the project
-version: 0.1.0
-		
-external:
-  gomore:
-    commands:
-      build: go build main.go
-      test: go test
-		`, name)
+		gy := godotyaml.New(godotyaml.Metadata{Name: name}, false)
+		gy.SetExternalConfig("gomore", map[any]any{"commands": map[string]string{"build": "go build main.go", "test": "go test"}})
+		wErr := gy.SaveNew("go.yaml")
 
-		wErr := os.WriteFile("go.yaml", []byte(initContent), 0644)
 		if wErr != nil {
 			termange.PrintErrorln(wErr.Error())
 			os.Exit(1)
