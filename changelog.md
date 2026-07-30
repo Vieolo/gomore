@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.2.1 (2026-07-31)
+- Improved the `init` command which now uses `godotyaml`'s generation funcion
+
 ## v0.2.0 (2026-05-23)
 
 #### Breaking Changes
