@@ -1,0 +1,93 @@
+# See https://goreleaser.com for documentation.
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+
+version: 2
+
+project_name: gomore
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: gomore
+    main: ./
+    binary: gomore
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    # -s -w strip debug info to keep the binary small.
+    # Version is read from the embedded go.yaml at run time, so no -X needed.
+    ldflags:
+      - -s -w
+
+archives:
+  - id: gomore
+    formats: [tar.gz]
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else }}{{ .Arch }}{{ end }}
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    files:
+      - LICENSE
+      - README.md
+      - changelog.md
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  # The release body normally comes from changelog.md: the workflow extracts the
+  # section for the tag being released and passes it with --release-notes, which
+  # short-circuits everything below. A generated commit list only restates the
+  # git history, whereas a release should say what changed for the person
+  # installing it.
+  #
+  # Do NOT set `disable: true` here. GoReleaser skips the whole changelog stage
+  # when it is set, and reading the --release-notes file is the first thing that
+  # stage does — so disabling it silently throws the file away and publishes an
+  # empty release body. The settings below are only reached when goreleaser runs
+  # without --release-notes, such as a manual invocation.
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
+      - "Merge pull request"
+      - "Merge branch"
+
+brews:
+  - name: gomore
+    repository:
+      owner: vieolo
+      name: homebrew-tap
+      branch: master
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    directory: Formula
+    homepage: "https://github.com/vieolo/gomore"
+    description: "CLI tool to provide functionalities that complement the official Go tooling"
+    license: "MIT"
+    # Skip the brew push for snapshots and prereleases (e.g. v1.2.3-rc1).
+    skip_upload: auto
+    install: |
+      bin.install "gomore"
+    test: |
+      system "#{bin}/gomore", "version"
+
+release:
+  draft: false
+  prerelease: auto
+  # No header or footer here. The body is supplied verbatim through
+  # --release-notes, so the workflow assembles the whole thing — including the
+  # footer — and there is a single place to look for what a release says.
